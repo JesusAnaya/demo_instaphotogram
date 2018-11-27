@@ -4,12 +4,16 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from posts.models import Post
 from posts.serializers import PostSerializer
+from posts.permissions import IsOwner
 
 
 class PostsViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsOwner)
+
+    def get_queryset(self):
+        return Post.objects.filter(owner=self.request.user)
 
     def create(self, request):
         serializer = PostSerializer(data=request.data)
