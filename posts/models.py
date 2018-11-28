@@ -22,3 +22,7 @@ class Post(models.Model):
             return thumbnail.url
         else:
             return None
+
+    def increase_likes(self):
+        self.likes += 1
+        self.save()

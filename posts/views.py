@@ -39,3 +39,10 @@ class PostsViewSet(viewsets.ModelViewSet):
 
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=['post'], detail=True)
+    def like(self, request, pk=None):
+        post = self.get_object()
+        post.increase_likes()
+        serializer = PostSerializer(post)
+        return Response(serializer.data, status=status.HTTP_200_OK)
