@@ -1,8 +1,9 @@
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
+from rest_framework import authentication
 from rest_framework.response import Response
 from rest_framework import status
-from accounts.serializers import CreateUserSerializer
+from accounts.serializers import CreateUserSerializer, CurrentUserSerializer
 
 
 class CreateUser(APIView):
@@ -32,3 +33,14 @@ class CreateUser(APIView):
         # Validate errors in POST data
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CurrentUser(APIView):
+    authentication_classes = (authentication.TokenAuthentication,)
+
+    def get(self, request, *args, **kwargs):
+        """
+        Get current user.
+        """
+        serializer = CurrentUserSerializer(request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
